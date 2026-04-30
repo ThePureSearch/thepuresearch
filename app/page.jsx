@@ -63,6 +63,7 @@ export default function Home() {
       {/* MENU 3 BARRES */}
       <div style={{ position: "fixed", top: "1.2rem", right: "1.5rem", zIndex: 100 }}>
         <button
+          aria-label="Menu"
           onClick={function() { setMenuOpen(!menuOpen); }}
           style={{ background: "none", border: "none", cursor: "pointer", padding: "0.4rem", display: "flex", flexDirection: "column", gap: "5px" }}
         >
