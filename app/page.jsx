@@ -8,7 +8,13 @@ const T = {
   es: { ph: "Describe lo que buscas...", sub: "Presiona Enter para buscar", legal: "Como Asociado de Amazon, obtengo ingresos por las compras que cumplen los requisitos." },
   it: { ph: "Descrivi cosa cerchi...", sub: "Premi Invio per cercare", legal: "In qualità di Affiliato Amazon, ricevo un guadagno dagli acquisti idonei." },
   pt: { ph: "Descreva o que procura...", sub: "Prima Enter para pesquisar", legal: "Como Associado Amazon, ganho com compras qualificadas." },
+  ja: { ph: "お探しのものを説明してください...", sub: "Enterキーで検索", legal: "Amazonアソシエイトとして、適格販売から収入を得ています。" },
+  nl: { ph: "Beschrijf wat u zoekt...", sub: "Druk op Enter om te zoeken", legal: "Als Amazon Associate verdien ik aan in aanmerking komende aankopen." },
+  pl: { ph: "Opisz czego szukasz...", sub: "Naciśnij Enter aby wyszukać", legal: "Jako Associate Amazon zarabiam na kwalifikujących się zakupach." },
+  sv: { ph: "Beskriv vad du letar efter...", sub: "Tryck Enter för att söka", legal: "Som Amazon Associate tjänar jag på kvalificerade köp." },
+  tr: { ph: "Ne aradığınızı açıklayın...", sub: "Aramak için Enter'a basın", legal: "Amazon İş Ortağı olarak uygun alımlardan kazanç sağlıyorum." },
 };
+
 
 const MENU = [
   { label: "About", href: "/about" },

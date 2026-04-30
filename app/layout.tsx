@@ -29,6 +29,11 @@ export const metadata: Metadata = {
       "es": "https://www.thepuresearch.com",
       "it": "https://www.thepuresearch.com",
       "pt": "https://www.thepuresearch.com",
+      "ja": "https://www.thepuresearch.com",
+      "nl": "https://www.thepuresearch.com",
+      "pl": "https://www.thepuresearch.com",
+      "sv": "https://www.thepuresearch.com",
+      "tr": "https://www.thepuresearch.com",
     },
   },
 };
