@@ -1,7 +1,6 @@
 ﻿"use client";
 import { useState, useEffect, useRef } from "react";
 
-
 const T = {
   fr: { ph: "Décrivez ce que vous cherchez...", sub: "Appuyez sur Entrée pour rechercher", legal: "En tant que Partenaire Amazon, je réalise un bénéfice sur les achats remplissant les conditions requises." },
   en: { ph: "Describe what you are looking for...", sub: "Press Enter to search", legal: "As an Amazon Associate, I earn from qualifying purchases." },
@@ -11,12 +10,19 @@ const T = {
   pt: { ph: "Descreva o que procura...", sub: "Prima Enter para pesquisar", legal: "Como Associado Amazon, ganho com compras qualificadas." },
 };
 
+const MENU = [
+  { label: "About", href: "/about" },
+  { label: "Privacy", href: "/privacy" },
+  { label: "Terms", href: "/terms" },
+];
+
 export default function Home() {
   const [query, setQuery] = useState("");
   const [lang, setLang] = useState("en");
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const textareaRef = useRef(null);
 
   useEffect(function () {
@@ -47,9 +53,37 @@ export default function Home() {
 
   return (
     <main style={{ minHeight: "100vh", background: "#fff", display: "flex", flexDirection: "column", alignItems: "center", fontFamily: "'Segoe UI Light', 'Segoe UI', Arial, sans-serif" }}>
+
+      {/* MENU 3 BARRES */}
+      <div style={{ position: "fixed", top: "1.2rem", right: "1.5rem", zIndex: 100 }}>
+        <button
+          onClick={function() { setMenuOpen(!menuOpen); }}
+          style={{ background: "none", border: "none", cursor: "pointer", padding: "0.4rem", display: "flex", flexDirection: "column", gap: "5px" }}
+        >
+          <span style={{ display: "block", width: "22px", height: "1.5px", background: "#aaa" }} />
+          <span style={{ display: "block", width: "22px", height: "1.5px", background: "#aaa" }} />
+          <span style={{ display: "block", width: "22px", height: "1.5px", background: "#aaa" }} />
+        </button>
+        {menuOpen && (
+          <div style={{ position: "absolute", right: 0, top: "2.5rem", background: "white", border: "1px solid #eee", borderRadius: "1rem", boxShadow: "0 8px 32px rgba(0,0,0,0.08)", padding: "0.5rem 0", minWidth: "140px" }}>
+            {MENU.map(function(item) {
+              return (
+                <a key={item.href} href={item.href}
+                  style={{ display: "block", padding: "0.65rem 1.25rem", color: "#444", textDecoration: "none", fontSize: "0.9rem", fontWeight: "300" }}
+                  onMouseEnter={function(e) { e.currentTarget.style.color = "#111"; }}
+                  onMouseLeave={function(e) { e.currentTarget.style.color = "#444"; }}
+                >
+                  {item.label}
+                </a>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%", maxWidth: "680px", padding: "0 1.5rem", paddingTop: searched ? "2.5rem" : "26vh" }}>
 
-        {/* TITRE AVEC VAGUE DE COULEUR */}
+        {/* TITRE */}
         <div style={{ textAlign: "center", marginBottom: "2.5rem" }}>
           <h1 style={{
             fontSize: searched ? "1.8rem" : "3rem",
@@ -152,7 +186,7 @@ export default function Home() {
       </div>
 
       <footer style={{ marginTop: "auto", padding: "2rem 0", textAlign: "center", fontSize: "0.7rem", color: "#ddd" }}>
-      {t.legal}
+        {t.legal}
       </footer>
 
       <style>{`
