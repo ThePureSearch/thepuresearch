@@ -18,7 +18,7 @@ export default function Privacy() {
       <p>We use Amazon's Product Advertising API to display product results. Amazon's own privacy policy applies to all purchases made on their platform.</p>
 
       <h2 style={{ fontWeight: "300", fontSize: "1.1rem", marginTop: "2rem" }}>Contact</h2>
-      <p>For any questions: contact@thepuresearch.com</p>
+      <p>For any questions: contact.thepuresearch@gmail.com</p>
     </main>
   );
 }
