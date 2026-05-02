@@ -207,9 +207,10 @@ export default function Home() {
         )}
       </div>
 
-      <footer style={{ padding: "1.5rem", textAlign: "center", fontSize: "0.65rem", color: "#ddd", maxWidth: "680px" }}>
+      <footer style={{ marginTop: "auto", padding: "1.5rem", textAlign: "center", fontSize: "0.65rem", color: "#ddd", width: "100%", position: "fixed", bottom: 0, left: 0, right: 0, background: "white" }}>
         {t.legal}
       </footer>
+
 
       <style>{`
         @keyframes shimmer {
