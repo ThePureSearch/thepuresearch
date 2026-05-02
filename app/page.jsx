@@ -41,6 +41,7 @@ export default function Home() {
     if (!query.trim()) return;
     setLoading(true);
     setSearched(true);
+    textareaRef.current?.blur();
     fetch("/api/search?q=" + encodeURIComponent(query) + "&lang=" + lang)
       .then(function (r) { return r.json(); })
       .then(function (d) { setResults(d.results || []); setLoading(false); })
