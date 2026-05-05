@@ -199,7 +199,7 @@ export default function Home() {
                   onMouseEnter={function(e) { e.currentTarget.style.boxShadow = "0 6px 24px rgba(0,0,0,0.09)"; }}
                   onMouseLeave={function(e) { e.currentTarget.style.boxShadow = "0 1px 4px rgba(0,0,0,0.04)"; }}
                 >
-                  {i === 0 && <span style={{ position: "absolute", top: "0.5rem", right: "0.75rem", fontSize: "0.65rem", color: "#6ab0f5", fontWeight: "400" }}>✦ sélection</span>}
+                  {i === 0 && <span style={{ position: "absolute", top: "0.35rem", right: "0.75rem", fontSize: "0.65rem", color: "#6ab0f5", fontWeight: "400" }}>✦ sélection</span>}
                   {item.image ? <img src={item.image} alt={item.title} style={{ width: "64px", height: "64px", objectFit: "contain", borderRadius: "0.75rem", flexShrink: 0, background: "#f9f9f9" }} /> : <div style={{ width: "64px", height: "64px", borderRadius: "0.75rem", flexShrink: 0, background: "#f9f9f9" }} />}
                   <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", gap: "0.25rem", paddingRight: "2rem" }}>
                     <p style={{ color: "#111", fontSize: "0.85rem", fontWeight: "400", margin: 0, lineHeight: "1.4" }}>{item.title}</p>
@@ -223,7 +223,7 @@ export default function Home() {
                   onMouseEnter={function(e) { e.currentTarget.style.boxShadow = "0 6px 24px rgba(0,0,0,0.09)"; }}
                   onMouseLeave={function(e) { e.currentTarget.style.boxShadow = "0 1px 4px rgba(0,0,0,0.04)"; }}
                 >
-                  {i === 0 && <span style={{ position: "absolute", top: "0.5rem", right: "0.75rem", fontSize: "0.65rem", color: "#6ab0f5", fontWeight: "400" }}>✦ sélection</span>}
+                  {i === 0 && <span style={{ position: "absolute", top: "0.35rem", right: "0.75rem", fontSize: "0.65rem", color: "#6ab0f5", fontWeight: "400" }}>✦ sélection</span>}
                   {item.image ? <img src={item.image} alt={item.title} style={{ width: "64px", height: "64px", objectFit: "contain", borderRadius: "0.75rem", flexShrink: 0, background: "#f9f9f9" }} /> : <div style={{ width: "64px", height: "64px", borderRadius: "0.75rem", flexShrink: 0, background: "#f9f9f9" }} />}
                   <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", gap: "0.25rem", paddingRight: "2rem" }}>
                     <p style={{ color: "#111", fontSize: "0.85rem", fontWeight: "400", margin: 0, lineHeight: "1.4" }}>{item.title}</p>
