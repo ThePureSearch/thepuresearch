@@ -24,7 +24,8 @@ const MENU = [
 export default function Home() {
   const [query, setQuery] = useState("");
   const [lang, setLang] = useState("en");
-  const [results, setResults] = useState([]);
+  const [amazon, setAmazon] = useState([]);
+  const [ebay, setEbay] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -44,8 +45,12 @@ export default function Home() {
     textareaRef.current?.blur();
     fetch("/api/search?q=" + encodeURIComponent(query) + "&lang=" + lang)
       .then(function (r) { return r.json(); })
-      .then(function (d) { setResults(d.results || []); setLoading(false); })
-      .catch(function () { setResults([]); setLoading(false); });
+      .then(function (d) {
+        setAmazon(d.amazon || []);
+        setEbay(d.ebay || []);
+        setLoading(false);
+      })
+      .catch(function () { setAmazon([]); setEbay([]); setLoading(false); });
   }
 
   function handleChange(e) {
@@ -56,6 +61,8 @@ export default function Home() {
       ta.style.height = ta.scrollHeight + "px";
     }
   }
+
+  var hasResults = amazon.length > 0 || ebay.length > 0;
 
   return (
     <main style={{ minHeight: "100dvh", background: "#fff", display: "flex", flexDirection: "column", alignItems: "center", fontFamily: "'Segoe UI Light', 'Segoe UI', Arial, sans-serif" }}>
@@ -180,22 +187,24 @@ export default function Home() {
             })}
           </div>
         )}
-
-        {/* RESULTATS */}
-        {!loading && results.length > 0 && (
+        
+        {/* RESULTATS AMAZON */}
+        {!loading && amazon.length > 0 && (
           <div style={{ width: "100%", marginTop: "1.5rem", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-            {results.map(function (item, i) {
+            <p style={{ fontSize: "0.7rem", color: "#bbb", letterSpacing: "0.1em", textTransform: "uppercase", margin: "0 0 0.25rem 0.5rem" }}>Amazon</p>
+            {amazon.map(function (item, i) {
               return (
                 <a key={i} href={item.url} target="_blank" rel="noopener noreferrer"
-                  style={{ display: "flex", gap: "0.75rem", padding: "0.875rem 1rem", borderRadius: "1.25rem", border: "1px solid #eee", background: "white", textDecoration: "none", boxShadow: "0 1px 4px rgba(0,0,0,0.04)", transition: "all 0.2s ease" }}
-                  onMouseEnter={function(e) { e.currentTarget.style.boxShadow = "0 6px 24px rgba(0,0,0,0.09)"; e.currentTarget.style.borderColor = "#ddd"; }}
-                  onMouseLeave={function(e) { e.currentTarget.style.boxShadow = "0 1px 4px rgba(0,0,0,0.04)"; e.currentTarget.style.borderColor = "#eee"; }}
+                  style={{ display: "flex", gap: "0.75rem", padding: "0.875rem 1rem", borderRadius: "1.25rem", border: i === 0 ? "1px solid #e8f0fe" : "1px solid #eee", background: i === 0 ? "#fafcff" : "white", textDecoration: "none", boxShadow: "0 1px 4px rgba(0,0,0,0.04)", transition: "all 0.2s ease", position: "relative" }}
+                  onMouseEnter={function(e) { e.currentTarget.style.boxShadow = "0 6px 24px rgba(0,0,0,0.09)"; }}
+                  onMouseLeave={function(e) { e.currentTarget.style.boxShadow = "0 1px 4px rgba(0,0,0,0.04)"; }}
                 >
-                  <img src={item.image} alt={item.title} style={{ width: "64px", height: "64px", objectFit: "contain", borderRadius: "0.75rem", flexShrink: 0, background: "#f9f9f9" }} />
-                  <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", gap: "0.25rem" }}>
+                  {i === 0 && <span style={{ position: "absolute", top: "0.5rem", right: "0.75rem", fontSize: "0.65rem", color: "#6ab0f5", fontWeight: "400" }}>✦ sélection</span>}
+                  {item.image ? <img src={item.image} alt={item.title} style={{ width: "64px", height: "64px", objectFit: "contain", borderRadius: "0.75rem", flexShrink: 0, background: "#f9f9f9" }} /> : <div style={{ width: "64px", height: "64px", borderRadius: "0.75rem", flexShrink: 0, background: "#f9f9f9" }} />}
+                  <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", gap: "0.25rem", paddingRight: "2rem" }}>
                     <p style={{ color: "#111", fontSize: "0.85rem", fontWeight: "400", margin: 0, lineHeight: "1.4" }}>{item.title}</p>
                     <p style={{ color: "#111", fontWeight: "600", fontSize: "0.95rem", margin: 0 }}>{item.price}</p>
-                    <p style={{ color: "#f5a623", fontSize: "0.75rem", margin: 0 }}>{item.rating}</p>
+                    {item.rating && <p style={{ color: "#f5a623", fontSize: "0.75rem", margin: 0 }}>{item.rating}{item.reviewCount ? <span style={{ color: "#bbb", marginLeft: "0.3rem" }}>({item.reviewCount})</span> : null}</p>}
                   </div>
                 </a>
               );
@@ -203,7 +212,34 @@ export default function Home() {
           </div>
         )}
 
-        {!loading && searched && results.length === 0 && (
+        {/* RESULTATS EBAY */}
+        {!loading && ebay.length > 0 && (
+          <div style={{ width: "100%", marginTop: "1.25rem", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+            <p style={{ fontSize: "0.7rem", color: "#bbb", letterSpacing: "0.1em", textTransform: "uppercase", margin: "0 0 0.25rem 0.5rem" }}>eBay</p>
+            {ebay.map(function (item, i) {
+              return (
+                <a key={i} href={item.url} target="_blank" rel="noopener noreferrer"
+                  style={{ display: "flex", gap: "0.75rem", padding: "0.875rem 1rem", borderRadius: "1.25rem", border: i === 0 ? "1px solid #e8f0fe" : "1px solid #eee", background: i === 0 ? "#fafcff" : "white", textDecoration: "none", boxShadow: "0 1px 4px rgba(0,0,0,0.04)", transition: "all 0.2s ease", position: "relative" }}
+                  onMouseEnter={function(e) { e.currentTarget.style.boxShadow = "0 6px 24px rgba(0,0,0,0.09)"; }}
+                  onMouseLeave={function(e) { e.currentTarget.style.boxShadow = "0 1px 4px rgba(0,0,0,0.04)"; }}
+                >
+                  {i === 0 && <span style={{ position: "absolute", top: "0.5rem", right: "0.75rem", fontSize: "0.65rem", color: "#6ab0f5", fontWeight: "400" }}>✦ sélection</span>}
+                  {item.image ? <img src={item.image} alt={item.title} style={{ width: "64px", height: "64px", objectFit: "contain", borderRadius: "0.75rem", flexShrink: 0, background: "#f9f9f9" }} /> : <div style={{ width: "64px", height: "64px", borderRadius: "0.75rem", flexShrink: 0, background: "#f9f9f9" }} />}
+                  <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", gap: "0.25rem", paddingRight: "2rem" }}>
+                    <p style={{ color: "#111", fontSize: "0.85rem", fontWeight: "400", margin: 0, lineHeight: "1.4" }}>{item.title}</p>
+                    <p style={{ color: "#111", fontWeight: "600", fontSize: "0.95rem", margin: 0 }}>{item.price}</p>
+                    <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+                      {item.rating && <p style={{ color: "#f5a623", fontSize: "0.75rem", margin: 0 }}>{item.rating}</p>}
+                      {item.condition && <span style={{ fontSize: "0.65rem", color: "#bbb", background: "#f5f5f5", padding: "0.1rem 0.4rem", borderRadius: "0.5rem" }}>{item.condition}</span>}
+                    </div>
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+        )}
+
+        {!loading && searched && !hasResults && (
           <p style={{ marginTop: "2rem", color: "#bbb", fontSize: "0.875rem" }}>Aucun résultat. Essayez autre chose.</p>
         )}
       </div>
@@ -211,7 +247,6 @@ export default function Home() {
       <footer style={{ marginTop: "auto", padding: "1.5rem", textAlign: "center", fontSize: "0.65rem", color: "#ddd", width: "100%", position: "fixed", bottom: 0, left: 0, right: 0, background: "white" }}>
         {t.legal}
       </footer>
-
 
       <style>{`
         @keyframes shimmer {
