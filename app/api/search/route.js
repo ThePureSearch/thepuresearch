@@ -33,6 +33,9 @@ const ebayMarketMap = {
 async function reformulateWithAI(query, lang) {
   const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
   if (!ANTHROPIC_API_KEY) return { keywords: query, category: 'All' };
+  const words = query.trim().split(/\s+/);
+  const isSimple = words.length <= 6 && !/\b(je|tu|il|le|la|les|qui|que|pour|avec|dans|veux|cherche|trouve|donne|want|need|looking|find|give|show|something|thing|objet|cadeau|gift|meilleur|best|comme|like|genre|type)\b/i.test(query);
+  if (isSimple) return { keywords: query, category: 'All' };
   try {
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -46,8 +49,33 @@ async function reformulateWithAI(query, lang) {
         max_tokens: 150,
         messages: [{
           role: 'user',
-          content: `You are a shopping search expert. Convert this user request into optimal search keywords in English.
+          content: `You are an expert shopping assistant with deep knowledge of products, brands, movies, culture, and everyday objects worldwide. Your job is to identify EXACTLY what product the user is looking for, even when described vaguely, creatively, or in any language.
 User request (in ${lang}): "${query}"
+Think carefully:
+- What is the user REALLY looking for?
+- Identify the exact product, brand, or item even if described indirectly
+- Consider cultural references, movie props, celebrity items, objects seen in the street
+- If the user describes an object physically, identify what it is
+
+Examples:
+- "round black and white cookie with cream inside" → {"keywords": "Oreo cookies", "category": "Grocery"}
+- "cadeau pour ma mère qui aime cuisiner" → {"keywords": "cooking gifts for women kitchen tools", "category": "Kitchen"}
+- "the thing MacGyver uses to fix everything" → {"keywords": "duct tape", "category": "Tools"}
+- "bracelet en pierre noire brillante" → {"keywords": "black obsidian bracelet gemstone", "category": "Clothing"}
+- "lunettes de Macron for sure" → {"keywords": "Vuarnet sunglasses men", "category": "Clothing"}
+- "jouet peluche qui dit hello" → {"keywords": "talking plush toy hello", "category": "Toys"}
+- "most iconic item Casino Royale James Bond" → {"keywords": "Casino Royale playing cards James Bond", "category": "Toys"}
+Critical rules for identifying products:
+- ALWAYS identify the core product first from physical/functional description, THEN add modifiers
+- Ignore indirect hints like "starts with O/A/B", "I think it's called...", "you know the thing..." → identify from description only
+- Size/quantity modifiers: only add if user clearly wants them ("big pack" → add "bulk pack", "family size" → add "family size", "small" → add "mini" or "travel size")
+- Cultural/movie/celebrity references: identify the exact item (actor's prop, character's tool, celebrity's accessory)
+- Vague descriptions of objects seen in real life: focus on material + shape + function + color to identify
+- If user asks for a gift: identify the recipient's interest first, then find best matching product
+- If user describes a sensation or need ("something to sleep better", "something to stop forgetting"): identify the product category that solves it
+- Brand hints: if user clearly names a brand, use it. If they hint at it, ignore the hint and identify from description
+- Multiple products: if user clearly wants several items, reflect that in keywords
+- Slang, humor, or creative descriptions: take them seriously and identify the real product behind them
 Respond ONLY with a JSON object, no explanation:
 {"keywords": "optimal search keywords in english", "category": "Amazon category"}
 Valid categories: All, Electronics, Clothing, Kitchen, Sports, Books, Toys, Beauty, Garden, Automotive, Health, Music, Tools, Grocery`
@@ -121,7 +149,8 @@ async function searchEbay(optimizedQuery, lang) {
   if (!APP_ID) return [];
   try {
     const marketplace = ebayMarketMap[lang] || 'EBAY_US';
-    const url = `https://api.ebay.com/buy/browse/v1/item_summary/search?q=${encodeURIComponent(optimizedQuery)}&limit=3`;
+    const shortQuery = optimizedQuery.split(' ').slice(0, 4).join(' ');
+    const url = `https://api.ebay.com/buy/browse/v1/item_summary/search?q=${encodeURIComponent(shortQuery)}&limit=3`;
     const response = await fetch(url, {
       headers: {
         'Authorization': `Bearer ${await getEbayToken()}`,
