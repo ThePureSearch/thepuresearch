@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "The Pure Search — Find anything on Amazon",
-  description: "Describe what you are looking for and find the best Amazon products instantly. Simple, fast, available worldwide.",
-  keywords: "amazon, search, products, shopping, find products, amazon search engine",
+  title: "The Pure Search - AI Shopping Search Engine",
+  description: "Describe what you are looking for and find the best products on Amazon, and eBay instantly. Simple, fast, available worldwide.",
+  keywords: "shopping search engine, amazon, ebay, find products, AI shopping, product search, online shopping",
   openGraph: {
     title: "The Pure Search",
-    description: "The simplest way to find products on Amazon.",
+    description: "Find the best products by describing what you need.",
     url: "https://www.thepuresearch.com",
     siteName: "The Pure Search",
     type: "website",
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary",
     title: "The Pure Search",
-    description: "Find the best Amazon products by describing what you need.",
+    description: "Find the best products by describing what you need.",
   },
   icons: {
     icon: "/favicon.ico",
