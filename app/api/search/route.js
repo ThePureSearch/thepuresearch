@@ -288,10 +288,9 @@ async function searchEbay(optimizedQuery, lang, minPrice, maxPrice, sortBy, free
     const shortQuery = optimizedQuery.split(' ').slice(0, 6).join(' ');
     const filterParts = [];
 
-    if (minPrice && maxPrice) filterParts.push(`price:[${minPrice}..${maxPrice}]`);
-    else if (minPrice) filterParts.push(`price:[${minPrice}..10000000]`);
-    else if (maxPrice) filterParts.push(`price:[0..${maxPrice}]`);
-    if (minPrice || maxPrice) filterParts.push(`priceCurrency:${currency}`);
+    if (minPrice && maxPrice) filterParts.push(`price:[${minPrice}..${maxPrice}],priceCurrency:${currency}`);
+    else if (minPrice) filterParts.push(`price:[${minPrice}..10000000],priceCurrency:${currency}`);
+    else if (maxPrice) filterParts.push(`price:[0..${maxPrice}],priceCurrency:${currency}`);
     if (condition === 'used') filterParts.push('conditionIds:{3000|4000|5000|6000}');
     else if (condition === 'new') filterParts.push('conditionIds:{1000}');
     if (freeShipping) filterParts.push('maxDeliveryCost:0');
