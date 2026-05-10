@@ -2,17 +2,17 @@
 import { useState, useEffect, useRef } from "react";
 
 const T = {
-  fr: { ph: "Décrivez votre besoin...", sub: "Notre IA analyse votre demande et trouve le meilleur produit Amazon", legal: "En tant que Partenaire Amazon, je réalise un bénéfice sur les achats remplissant les conditions requises." },
-  en: { ph: "Describe what you need...", sub: "Our AI understands your request and finds the best Amazon product for you", legal: "As an Amazon Associate, I earn from qualifying purchases." },
-  de: { ph: "Beschreiben Sie Ihren Bedarf...", sub: "Unsere KI versteht Ihre Anfrage und findet das beste Amazon-Produkt", legal: "Als Amazon-Partner verdiene ich an qualifizierten Käufen." },
-  es: { ph: "Describe lo que necesitas...", sub: "Nuestra IA analiza tu solicitud y encuentra el mejor producto en Amazon", legal: "Como Asociado de Amazon, obtengo ingresos por las compras que cumplen los requisitos." },
-  it: { ph: "Descrivi cosa ti serve...", sub: "La nostra IA analizza la tua richiesta e trova il miglior prodotto su Amazon", legal: "In qualità di Affiliato Amazon, ricevo un guadagno dagli acquisti idonei." },
-  pt: { ph: "Descreva o que precisa...", sub: "A nossa IA analisa o seu pedido e encontra o melhor produto na Amazon", legal: "Como Associado Amazon, ganho com compras qualificadas." },
-  ja: { ph: "必要なものを説明してください...", sub: "AIがあなたのリクエストを分析し、最適なAmazon商品を見つけます", legal: "Amazonアソシエイトとして、適格販売から収入を得ています。" },
-  nl: { ph: "Beschrijf wat u nodig heeft...", sub: "Onze AI analyseert uw verzoek en vindt het beste Amazon-product", legal: "Als Amazon Associate verdien ik aan in aanmerking komende aankopen." },
-  pl: { ph: "Opisz czego potrzebujesz...", sub: "Nasza AI analizuje Twoje zapytanie i znajduje najlepszy produkt na Amazon", legal: "Jako Associate Amazon zarabiam na kwalifikujących się zakupach." },
-  sv: { ph: "Beskriv vad du behöver...", sub: "Vår AI analyserar din förfrågan och hittar den bästa Amazon-produkten", legal: "Som Amazon Associate tjänar jag på kvalificerade köp." },
-  tr: { ph: "İhtiyacınızı açıklayın...", sub: "Yapay zekamız talebinizi analiz eder ve en iyi Amazon ürününü bulur", legal: "Amazon İş Ortağı olarak uygun alımlardan kazanç sağlıyorum." },
+  fr: { ph: "Décrivez votre besoin...", sub: "Notre IA analyse votre demande et trouve le meilleur produit", legal: "En tant que Partenaire Amazon et eBay, je réalise un bénéfice sur les achats remplissant les conditions requises." },
+  en: { ph: "Describe what you need...", sub: "Our AI understands your request and finds the best product for you", legal: "As an Amazon Associate and eBay Partner, I earn from qualifying purchases." },
+  de: { ph: "Beschreiben Sie Ihren Bedarf...", sub: "Unsere KI versteht Ihre Anfrage und findet das beste Produkt", legal: "Als Amazon-Partner und eBay-Partner verdiene ich an qualifizierten Käufen." },
+  es: { ph: "Describe lo que necesitas...", sub: "Nuestra IA analiza tu solicitud y encuentra el mejor producto", legal: "Como Asociado de Amazon y socio de eBay, obtengo ingresos por las compras que cumplen los requisitos." },
+  it: { ph: "Descrivi cosa ti serve...", sub: "La nostra IA analizza la tua richiesta e trova il miglior prodotto", legal: "In qualità di Affiliato Amazon e Partner eBay, ricevo un guadagno dagli acquisti idonei." },
+  pt: { ph: "Descreva o que precisa...", sub: "A nossa IA analisa o seu pedido e encontra o melhor produto", legal: "Como Associado Amazon e Parceiro eBay, ganho com compras qualificadas." },
+  ja: { ph: "必要なものを説明してください...", sub: "AIがあなたのリクエストを分析し、最適な商品を見つけます", legal: "AmazonアソシエイトおよびeBayパートナーとして、適格販売から収入を得ています。" },
+  nl: { ph: "Beschrijf wat u nodig heeft...", sub: "Onze AI analyseert uw verzoek en vindt het beste product", legal: "Als Amazon Associate en eBay Partner verdien ik aan in aanmerking komende aankopen." },
+  pl: { ph: "Opisz czego potrzebujesz...", sub: "Nasza AI analizuje Twoje zapytanie i znajduje najlepszy produkt", legal: "Jako Associate Amazon i Partner eBay zarabiam na kwalifikujących się zakupach." },
+  sv: { ph: "Beskriv vad du behöver...", sub: "Vår AI analyserar din förfrågan och hittar den bästa produkten", legal: "Som Amazon Associate och eBay Partner tjänar jag på kvalificerade köp." },
+  tr: { ph: "İhtiyacınızı açıklayın...", sub: "Yapay zekamız talebinizi analiz eder ve en iyi ürünü bulur", legal: "Amazon İş Ortağı ve eBay Ortağı olarak uygun alımlardan kazanç sağlıyorum." },
 };
 
 const MENU = [
