@@ -158,11 +158,44 @@ Query (language: ${lang}): "${query}"
 else: null
 
 ═══ PRICE DETECTION (all languages) ═══
-• maxPrice: moins de/max/pas plus de/jusqu'à/unter/menos de/meno di/minder dan/under/poniżej/billigare än
-• minPrice: plus de/minimum/supérieur/mehr als/más de/più di/meer dan/above/over/powyżej/över
-• range: entre X et Y/zwischen X und Y/entre X y Y/tra X e Y/between X and Y
-• "balles"=euros: "15 balles"=maxPrice 15
-• "pas cher/günstig/barato/economico/goedkoop/cheap" → sortBy cheapest
+Extract NUMBERS always. Never return null when a price is mentioned.
+
+- maxPrice (less than):
+  FR: moins de/max/pas plus de/jusqu'à/maximum/en dessous de/inférieur à/à moins de/pas dépasser/ne pas dépasser/sous les/moins qu'/autour de
+  DE: unter/bis zu/maximal/nicht mehr als/höchstens/weniger als
+  ES: menos de/hasta/máximo/no más de/por debajo de/inferior a
+  IT: meno di/fino a/massimo/non più di/al massimo/sotto i
+  NL: minder dan/tot/maximaal/niet meer dan/onder de
+  EN: under/less than/max/up to/below/no more than/at most/cheaper than
+  PL: mniej niż/do/maksymalnie
+  SV: under/upp till/max/mindre än
+
+- minPrice (more than):
+  FR: plus de/minimum/supérieur à/au dessus de/à partir de/à plus de/au moins/dès/depuis/dépassant
+  DE: mehr als/mindestens/über/ab/wenigstens
+  ES: más de/mínimo/superior a/por encima de/al menos/desde
+  IT: più di/minimo/superiore a/almeno/oltre i/a partire da
+  NL: meer dan/minimaal/boven de/minstens/vanaf
+  EN: more than/above/minimum/at least/over/starting from
+  PL: więcej niż/powyżej/minimum
+  SV: mer än/minst/över/från
+
+- range (between X and Y):
+  FR: entre X et Y/de X à Y/compris entre/X-Y euros/de X jusqu'à Y
+  DE: zwischen X und Y/von X bis Y/X bis Y Euro
+  ES: entre X y Y/de X a Y/X-Y euros
+  IT: tra X e Y/fra X e Y/da X a Y/X-Y euro
+  NL: tussen X en Y/van X tot Y
+  EN: between X and Y/from X to Y/X to Y dollars
+  PL: między X a Y/od X do Y
+  SV: mellan X och Y/från X till Y
+
+- Slang & informal:
+  FR: "balles/euros/€" → euros. "15 balles"=maxPrice 15, "50-60 balles"=minPrice 50 maxPrice 60
+  EN: "bucks/dollars/$" → dollars
+  DE: "Euro/€" → euros
+
+- "pas cher/günstig/barato/economico/goedkoop/cheap/bon marché/abordable" → sortBy cheapest
 
 ═══ SORT DETECTION (all languages) ═══
 • "bestselling": plus vendu/meistverkauft/más vendido/più venduto/bestverkocht
