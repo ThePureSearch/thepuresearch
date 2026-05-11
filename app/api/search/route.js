@@ -264,9 +264,9 @@ Valid categories: All, Electronics, Clothing, Kitchen, Sports, Books, Toys, Beau
 }
 
 async function searchAmazon(optimizedQuery, category, domain, tag, minPrice, maxPrice, sortBy, freeShipping) {
-  const ACCESS_KEY = process.env.AMAZON_ACCESS_KEY;
-  const SECRET_KEY = process.env.AMAZON_SECRET_KEY;
-  if (!ACCESS_KEY || !SECRET_KEY) {
+  const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY;
+
+  if (!RAPIDAPI_KEY) {
     return [{
       title: 'Voir sur Amazon : ' + optimizedQuery,
       price: '—', rating: '', image: '',
@@ -274,42 +274,88 @@ async function searchAmazon(optimizedQuery, category, domain, tag, minPrice, max
       source: 'amazon',
     }];
   }
+
   try {
-    const payload = {
-      Keywords: optimizedQuery,
-      Resources: ['Images.Primary.Medium', 'ItemInfo.Title', 'Offers.Listings.Price', 'CustomerReviews.StarRating'],
-      SearchIndex: category, ItemCount: 3,
-      PartnerTag: tag, PartnerType: 'Associates',
-      Marketplace: `www.${domain}`,
+    // Mapper le domain vers le country code
+    const countryMap = {
+      'amazon.fr': 'FR', 'amazon.com': 'US', 'amazon.de': 'DE',
+      'amazon.es': 'ES', 'amazon.it': 'IT', 'amazon.co.uk': 'GB',
+      'amazon.com.mx': 'MX', 'amazon.ca': 'CA', 'amazon.co.jp': 'JP',
+      'amazon.nl': 'NL', 'amazon.pl': 'PL', 'amazon.se': 'SE',
+      'amazon.com.br': 'BR', 'amazon.com.au': 'AU', 'amazon.com.tr': 'TR',
     };
-    if (minPrice) payload.MinPrice = Math.round(minPrice * 100);
-    if (maxPrice) payload.MaxPrice = Math.round(maxPrice * 100);
-    if (sortBy === 'toprated') payload.SortBy = 'AvgCustomerReviews';
-    else if (sortBy === 'cheapest') payload.SortBy = 'PriceLowToHigh';
-    else if (sortBy === 'expensive') payload.SortBy = 'PriceHighToLow';
-    else if (sortBy === 'newest') payload.SortBy = 'NewestArrivals';
-    if (freeShipping) payload.DeliveryFlags = ['FreeShipping'];
-    const r = await fetch(`https://webservices.${domain}/paapi5/searchitems`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json; charset=UTF-8',
-        'X-Amz-Target': 'com.amazon.paapi5.v1.ProductAdvertisingAPIv1.SearchItems',
-        'Content-Encoding': 'amz-1.0',
-      },
-      body: JSON.stringify(payload),
+    const country = countryMap[domain] || 'US';
+
+    // Tri
+    let sort_by = 'RELEVANCE';
+    if (sortBy === 'cheapest') sort_by = 'LOWEST_PRICE';
+    else if (sortBy === 'expensive') sort_by = 'HIGHEST_PRICE';
+    else if (sortBy === 'toprated') sort_by = 'AVERAGE_REVIEW';
+    else if (sortBy === 'newest') sort_by = 'NEWEST_ARRIVALS';
+    else if (sortBy === 'bestselling') sort_by = 'BEST_SELLERS';
+
+    const params = new URLSearchParams({
+      query: optimizedQuery,
+      country: country,
+      sort_by: sort_by,
+      page: '1',
     });
-    const data = await r.json();
-    return (data.SearchResult?.Items || []).map(item => ({
-      title: item.ItemInfo?.Title?.DisplayValue || 'Produit Amazon',
-      price: item.Offers?.Listings?.[0]?.Price?.DisplayAmount || 'Voir prix',
-      rating: item.CustomerReviews?.StarRating?.DisplayValue
-        ? '★'.repeat(Math.round(item.CustomerReviews.StarRating.DisplayValue)) + ' ' + item.CustomerReviews.StarRating.DisplayValue : '',
-      reviewCount: item.CustomerReviews?.Count?.DisplayValue || '',
-      image: item.Images?.Primary?.Medium?.URL || '',
-      url: `https://www.${domain}/dp/${item.ASIN}?tag=${tag}`,
+    if (minPrice) params.append('min_price', minPrice);
+    if (maxPrice) params.append('max_price', maxPrice);
+
+    const response = await fetch(
+      `https://real-time-amazon-data.p.rapidapi.com/search?${params.toString()}`,
+      {
+        method: 'GET',
+        headers: {
+          'x-rapidapi-host': 'real-time-amazon-data.p.rapidapi.com',
+          'x-rapidapi-key': RAPIDAPI_KEY,
+        },
+      }
+    );
+
+    const data = await response.json();
+    const products = (data?.data?.products || []).slice(0, 3);
+
+    if (products.length === 0) {
+      return [{
+        title: 'Voir sur Amazon : ' + optimizedQuery,
+        price: '—', rating: '', image: '',
+        url: `https://www.${domain}/s?k=${encodeURIComponent(optimizedQuery)}&tag=${tag}`,
+        source: 'amazon',
+      }];
+    }
+
+    return products.map(item => {
+      const asin = item.asin || '';
+      const affUrl = asin
+        ? `https://www.${domain}/dp/${asin}?tag=${tag}`
+        : `https://www.${domain}/s?k=${encodeURIComponent(optimizedQuery)}&tag=${tag}`;
+
+      const rating = item.product_star_rating
+        ? '★'.repeat(Math.round(parseFloat(item.product_star_rating))) + ' ' + item.product_star_rating
+        : '';
+
+      return {
+        title: item.product_title || 'Produit Amazon',
+        price: item.product_price || 'Voir prix',
+        rating: rating,
+        reviewCount: item.product_num_ratings ? item.product_num_ratings.toLocaleString() : '',
+        image: item.product_photo || '',
+        url: affUrl,
+        source: 'amazon',
+      };
+    });
+
+  } catch (err) {
+    console.error('RAPIDAPI ERROR:', err);
+    return [{
+      title: 'Voir sur Amazon : ' + optimizedQuery,
+      price: '—', rating: '', image: '',
+      url: `https://www.${domain}/s?k=${encodeURIComponent(optimizedQuery)}&tag=${tag}`,
       source: 'amazon',
-    }));
-  } catch { return []; }
+    }];
+  }
 }
 
 async function searchEbay(optimizedQuery, lang, minPrice, maxPrice, sortBy, freeShipping, condition) {
