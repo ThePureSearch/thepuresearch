@@ -329,7 +329,7 @@ async function searchAmazon(optimizedQuery, category, domain, tag, minPrice, max
     return products.map(item => {
       const asin = item.asin || '';
       const affUrl = asin
-        ? `https://www.${domain}/dp/${asin}?tag=${tag}&m=1`
+        ? `https://www.${domain}/dp/${asin}?tag=${tag}`
         : `https://www.${domain}/s?k=${encodeURIComponent(optimizedQuery)}&tag=${tag}`;
 
       const rating = item.product_star_rating
